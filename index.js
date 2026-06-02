@@ -1,8 +1,8 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 
-const TOKEN = "YOUR_BOT_TOKEN";
-const CHANNEL_ID = "1511420450427899974";
-const ROLE_ID = "1511445176571269291";
+const TOKEN = "";
+const CHANNEL_ID = "";
+const ROLE_ID = "";
 
 // NEW ORDER YOU REQUESTED
 const events = [
