@@ -1,8 +1,8 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 
-const TOKEN = "";
-const CHANNEL_ID = "";
-const ROLE_ID = "";
+const TOKEN = process.env.TOKEN;
+const CHANNEL_ID = process.env.CHANNEL_ID;
+const ROLE_ID = process.env.ROLE_ID;
 
 // NEW ORDER YOU REQUESTED
 const events = [
