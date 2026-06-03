@@ -6,10 +6,10 @@ const ROLE_ID = process.env.ROLE_ID;
 
 // NEW ORDER YOU REQUESTED
 const events = [
-    "👽 Alien Event",
-    "🌱 Plant Rush Event",
     "🚛 Trucker Event",
-    "🐝 Queen Bee Event"
+    "🐝 Queen Bee Event",
+    "👽 Alien Event",
+    "🌱 Plant Rush Event"
 ];
 
 let eventIndex = 0;
