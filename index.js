@@ -5,10 +5,10 @@ const CHANNEL_ID = process.env.CHANNEL_ID;
 const ROLE_ID = process.env.ROLE_ID;
 
 const events = [
+    "👽 Alien Event",
     "🌱 Plant Rush Event",
     "🚛 Trucker Event",
-    "🐝 Queen Bee Event",
-    "👽 Alien Event"
+    "🐝 Queen Bee Event"
 ];
 
 let eventIndex = 0;
