@@ -1,9 +1,9 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 
 const TOKEN = process.env.TOKEN;
-const CHANNEL_ID = process.env.CHANNEL_ID;
-const ROLE_ID = process.env.ROLE_ID;
-const COUNTDOWN_CHANNEL_ID = process.env.COUNTDOWN_CHANNEL_ID;
+const CHANNEL_ID = process.env.CHANNEL_ID; // Event announcements
+const ROLE_ID = process.env.ROLE_ID; // Role ping for events
+const COUNTDOWN_CHANNEL_ID = process.env.COUNTDOWN_CHANNEL_ID; // Countdown channel
 
 const events = [
     "🌱 Plant Rush Event",
@@ -20,37 +20,12 @@ const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
 
-function getNextSaturday7PMUK() {
-    const now = new Date();
-
-    const ukNow = new Date(
-        now.toLocaleString("en-GB", {
-            timeZone: "Europe/London"
-        })
-    );
-
-    const target = new Date(ukNow);
-
-    const daysUntilSaturday =
-        (6 - ukNow.getDay() + 7) % 7;
-
-    target.setDate(target.getDate() + daysUntilSaturday);
-    target.setHours(19, 0, 0, 0);
-
-    // If already past Saturday 7 PM, go to next week
-    if (target <= ukNow) {
-        target.setDate(target.getDate() + 7);
-    }
-
-    return target;
-}
-
 client.once("ready", async () => {
     console.log(`Logged in as ${client.user.tag}`);
 
-    // -------------------------
-    // EVENT ROTATION
-    // -------------------------
+    // =================================
+    // 15-MINUTE EVENT ROTATION
+    // =================================
     setInterval(async () => {
         try {
             const now = new Date();
@@ -81,15 +56,15 @@ client.once("ready", async () => {
 
                 console.log(`Sent: ${eventName}`);
             }
-        } catch (err) {
-            console.error("Event Error:", err);
+        } catch (error) {
+            console.error("Event Error:", error);
         }
     }, 1000);
 
-    // -------------------------
-    // COUNTDOWN CHANNEL
-    // -------------------------
-    const updateCountdown = async () => {
+    // =================================
+    // COUNTDOWN TO SATURDAY 7 PM UK
+    // =================================
+    async function updateCountdown() {
         try {
             const countdownChannel =
                 await client.channels.fetch(
@@ -101,17 +76,20 @@ client.once("ready", async () => {
                     CHANNEL_ID
                 );
 
-            if (!countdownChannel) return;
+            // Saturday 7 PM UK time
+            const target =
+                new Date("2026-06-06T19:00:00+01:00");
 
-            const target = getNextSaturday7PMUK();
-            const diff = target.getTime() - Date.now();
+            const diff =
+                target.getTime() - Date.now();
 
             if (diff <= 0) {
+
                 if (!countdownEnded) {
                     countdownEnded = true;
 
                     await announceChannel.send(
-                        "@everyone 🎉 The event has started!"
+                        "@everyone 🎉 It's now 7 PM UK time!"
                     );
 
                     console.log(
@@ -130,8 +108,6 @@ client.once("ready", async () => {
 
                 return;
             }
-
-            countdownEnded = false;
 
             const days = Math.floor(
                 diff / 86400000
@@ -159,13 +135,13 @@ client.once("ready", async () => {
                     `Countdown updated: ${newName}`
                 );
             }
-        } catch (err) {
+        } catch (error) {
             console.error(
                 "Countdown Error:",
-                err
+                error
             );
         }
-    };
+    }
 
     // Run immediately
     updateCountdown();
@@ -178,3 +154,10 @@ client.once("ready", async () => {
 });
 
 client.login(TOKEN);
+
+Required .env:
+
+TOKEN=YOUR_BOT_TOKEN
+CHANNEL_ID=123456789012345678
+ROLE_ID=123456789012345678
+COUNTDOWN_CHANNEL_ID=123456789012345678
