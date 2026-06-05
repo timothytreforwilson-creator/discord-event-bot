@@ -1,1 +1,60 @@
-const { Client, GatewayIntentBits } = require("discord.js"); const TOKEN = process.env.TOKEN; const CHANNEL_ID = process.env.CHANNEL_ID; const ROLE_ID = process.env.ROLE_ID; const events = [ "🌱 Plant Rush Event", "🚛 Trucker Event", "🐝 Queen Bee Event", "👽 Alien Event" ]; let eventIndex = 0; let lastCycle = -1; const client = new Client({ intents: [GatewayIntentBits.Guilds] }); client.once("ready", () => { console.log(Logged in as ${client.user.tag}); setInterval(async () => { try { const now = new Date(); // Unique number for each 15-minute period const cycle = Math.floor(Date.now() / (15 * 60 * 1000)); // Already sent for this cycle if (cycle === lastCycle) { return; } // Only send during first 10 seconds of each 15-minute mark if ( now.getMinutes() % 15 === 0 && now.getSeconds() < 10 ) { lastCycle = cycle; const channel = await client.channels.fetch(CHANNEL_ID); const eventName = events[eventIndex]; eventIndex = (eventIndex + 1) % events.length; await channel.send( <@&${ROLE_ID}> ${eventName} is ACTIVE! ); console.log(Sent: ${eventName}); } } catch (error) { console.error("Error:", error); } }, 1000); }); client.login(TOKEN);
+const { Client, GatewayIntentBits } = require("discord.js");
+
+const TOKEN = process.env.TOKEN;
+const CHANNEL_ID = process.env.CHANNEL_ID;
+const ROLE_ID = process.env.ROLE_ID;
+
+const events = [
+    "🌱 Plant Rush Event",
+    "🚛 Trucker Event",
+    "🐝 Queen Bee Event",
+    "👽 Alien Event"
+];
+
+let eventIndex = 0;
+let lastCycle = -1;
+
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds]
+});
+
+client.once("ready", () => {
+    console.log(`Logged in as ${client.user.tag}`);
+
+    setInterval(async () => {
+        try {
+            const now = new Date();
+
+            // Unique number for each 15-minute period
+            const cycle = Math.floor(Date.now() / (15 * 60 * 1000));
+
+            // Already sent for this cycle
+            if (cycle === lastCycle) {
+                return;
+            }
+
+            // Only send during first 10 seconds of each 15-minute mark
+            if (
+                now.getMinutes() % 15 === 0 &&
+                now.getSeconds() < 10
+            ) {
+                lastCycle = cycle;
+
+                const channel = await client.channels.fetch(CHANNEL_ID);
+
+                const eventName = events[eventIndex];
+                eventIndex = (eventIndex + 1) % events.length;
+
+                await channel.send(
+                    `<@&${ROLE_ID}> ${eventName} is ACTIVE!`
+                );
+
+                console.log(`Sent: ${eventName}`);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }, 1000);
+});
+
+client.login(TOKEN);
